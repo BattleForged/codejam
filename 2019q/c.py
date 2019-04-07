@@ -1,5 +1,5 @@
-def gmc(a, b):
-    while b > 0:
+def gcd(a, b):
+    while b != 0:
         c = a % b
         a = b
         b = c
@@ -17,18 +17,19 @@ def isqrt(n):
 
 def doit(crypted_message):
     n = len(crypted_message)
-    message = [0] * (n+1)
-    for i in range(n-1):
+    message = [0] * (n + 1)
+    for i in range(n):
         if crypted_message[i] != crypted_message[i+1]:
             base = i+1
-            message[base] = gmc(crypted_message[i], crypted_message[i+1])
-    for i in range(base-1, -1, -1):
-        message[i] = crypted_message[i] / message[i+1]
+            message[base] = gcd(crypted_message[i], crypted_message[i + 1])
+            break
+    for i in range(base - 1, -1, -1):
+        message[i] = crypted_message[i] // message[i + 1]
     for i in range(base, n):
-        message[i+1] = crypted_message[i] / message[i]
+        message[i + 1] = crypted_message[i] // message[i]
     all_alphabet = list(set(message))
     all_alphabet.sort()
-    alphabet_dict = {value: chr(index+ord('A')) for index, value in enumerate(all_alphabet)}
+    alphabet_dict = {value: chr(index + ord('A')) for index, value in enumerate(all_alphabet)}
 
     return ''.join([alphabet_dict[number] for number in message])
 
