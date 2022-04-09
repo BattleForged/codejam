@@ -1,69 +1,65 @@
 INF = 10**8
-def dist(a, b, n):
-    aList = []
-    bList = []
-    while(a > 0):
-        aList.append(a%n)
-        a = a// n
-    while(b > 0):
-        bList.append(b%n)
-        b = b// n
-    aLen = len(aList)
-    bLen = len(bList)
-    k = 0
-    for i in range(min(aLen, bLen)):
-        if (aList[i] == bList[i]):
-            k += 1
-    return aLen - k + bLen - k
 
-def check(x, list):
-    cnt = [0] * len(list)
-    n = len(list)
-    while(x > 0):
-        cnt[x%n] += 1
-        x = x // n
-    for i in range(n):
-        if(cnt[i] != list[i]):
-            return False
-    return True
+def generate_overlap(step, e, w):
+    ret = []
+    for i in range(e+2):
+        tmp = []
+        for j in range(e+2):
+            tmp.append([0]*w)
+        ret.append(tmp)
+    
+    for i in range(e+2):
+        x = [a for a in step[i]]
+        for j in range(i, e+2):
+            for k in range(w):
+                x[k] = min(x[k], step[j][k])
+                ret[i][j][k] = x[k]
+    return ret
 
-def generate(list):
-    out = []
-    for i in range(len(list)**sum(list)):
-        if(check(i, list)):
-            out.append(i)
-    return out
+def empty_matrix(a, value):
+    ret = []
+    for i in range(a):
+        ret.append([value] * a)
+    for i in range(a):
+        ret[i][i] = 0
+    return ret
 
-def simple(x):
-    last = 0
-    out = 0
-    for i in range(x):
-        now = int(input())
-        out += abs(now - last)
-        last = now
-    return out + last
+def cal(overlap, a, b, w):
+    ret = 0
+    for i in range(w):
+        ret += a[i] + b[i] - 2*overlap[i]
+    return ret
+
+def generate_tepResult(overlap, step, e, w):
+    ret = []
+    for i in range(e+2):
+        tmp = []
+        for j in range(e+2):
+            tmp.append([0]*(e+2))
+        ret.append(tmp)
 
 def doit():
     [e, w] = [int(x) for x in input().split()]
-    last = {0: 0}
-
-    if w == 1:
-        return simple(e)
+    step = []
+    step.append([0]*w)
     for i in range(e):
-        step = [int(x) for x in input().split()]
-        possible = generate(step)
-        next = {}
-        for i in possible:
-            now = INF
-            for j in last.keys():
-                now = min(last[j] + dist(i, j, w), now)
-            next[i] = now
-        last = next
+        step.append([int(x) for x in input().split()])
+    step.append([0]*w)
     
-    now = INF
-    for j in last.keys():
-        now = min(last[j] + dist(0, j, w), now)
-    return now
+    overlap = generate_overlap(step, e, w)
+    result = empty_matrix(e+2, INF)
+
+    overlap_sum = empty_matrix(e+2, 0)
+    for i in range(1, e+2):
+        for j in range(i, e+2):
+            overlap_sum[i][j] = sum(overlap[i][j])
+    step_sum = [sum(step[i]) for i in range(e+2)]
+
+    for i in range(1, e+2):
+        for j in range(e+2-i):
+            for k in range(0, i):
+                result[j][j+i] = min(result[j][j+k] + result[j+k+1][j+i] + (step_sum[j+k] + step_sum[j+k+1] - 2 * overlap_sum[j][j+i]), result[j][j+i])
+    return result[0][e+1]
 
 T = int(input())
 for t in range(1, T + 1):
