@@ -27,8 +27,7 @@ def doit():
             pKnown[rx-1] = px
             pByT += px
         knownRoomCnt = sum(i > 0 for i in pKnown)
-        print(knownRoomCnt)
-        print('E {}'.format(round(pByT*(n-knownRoomCnt)/2/(k//2+1))+sum(pKnown)))
+        print('E {}'.format(round(pByT*(n-knownRoomCnt)/2/(k//2+1))+sum(pKnown)//2))
 
 def getRandomList(n, r):
     randomP = []
