@@ -16,3 +16,4 @@
 | 2022 | q | AC | AC | AC | AC | AC |
 | 2022 | 1a | AC | AC | AC |   |   |
 | 2022 | 1b | AC | AC | AC |   |   |
+| 2022 | 1c | AC | AC | |   |   |
